@@ -19,7 +19,7 @@
   "homepage": "https://github.com/PolymerElements/iron-input",
   "ignore": [],
   "dependencies": {
-    "polymer": "Polymer/polymer#v0.8.0-rc.6"
+    "polymer": "Polymer/polymer#v0.8.0-rc.7"
   },
   "devDependencies": {
     "iron-doc-viewer": "PolymerElements/iron-doc-viewer#^0.8.6",
