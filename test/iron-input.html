@@ -45,6 +45,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="prevent-invalid-input">
+    <template>
+      <input is="iron-input" prevent-invalid-input pattern="[0-9]*">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="prevent-invalid-input-has-value">
+    <template>
+      <input is="iron-input" prevent-invalid-input pattern="[0-9]*" value="foobar">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="prevent-invalid-input-has-bind-value">
+    <template>
+      <input is="iron-input" prevent-invalid-input pattern="[0-9]*" bind-value="foobar">
+    </template>
+  </test-fixture>
+
   <script>
 
     suite('basic', function() {
@@ -63,6 +81,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('default bindValue sets value', function() {
         var input = fixture('has-bind-value');
         assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+      });
+
+      test('prevent invalid input works with bindValue', function() {
+        var input = fixture('prevent-invalid-input');
+        input.bindValue = 'foobar';
+        assert.equal(input.bindValue, '', 'bindValue is empty');
+        assert.equal(input.bindValue, input.value, 'bindValue equals value');
+      });
+
+      test('prevent invalid input works with default value', function() {
+        var input = fixture('prevent-invalid-input-has-value');
+        assert.equal(input.value, '', 'value is empty');
+        assert.equal(input.bindValue, input.value, 'bindValue equals value');
+      });
+
+      test('prevent invalid input works with default bindValue', function() {
+        var input = fixture('prevent-invalid-input-has-bind-value');
+        assert.equal(input.bindValue, '', 'bindValue is empty');
+        assert.equal(input.bindValue, input.value, 'bindValue equals value');
       });
 
     });
