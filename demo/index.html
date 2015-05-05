@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="../iron-input.html">
+  <link rel="import" href="only-cats.html">
+  <link rel="import" href="multi-validatable.html">
 
   <link rel="stylesheet" href="../../paper-styles/demo.css">
 
@@ -51,6 +53,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div>Prevent invalid input</div>
 
       can only type numbers: <input is="iron-input" prevent-invalid-input pattern="[0-9]*">
+    </section>
+
+    <section>
+
+      <div>Custom validator</div>
+
+      <p>
+        <only-cats></only-cats>
+        can only type <code>cats</code>: <input is="iron-input" prevent-invalid-input validator="only-cats">
+      </p>
+
+      <p>
+        type numbers in both fields:
+        <multi-validatable>
+          <input is="iron-input" pattern="[0-9]*"> / <input is="iron-input" pattern="[0-9]*">
+        </multi-validatable>
+      </p>
+
+      <p>
+        type <code>cats</code> across both fields:
+        <multi-validatable validator="only-cats">
+          <input is="iron-input"> / <input is="iron-input">
+        </multi-validatable>
+      </p>
+
     </section>
 
   </template>

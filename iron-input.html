@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-meta/iron-meta.html">
 
 <!--
 By default you can only get notified of changes to an `input`'s `value` due to user input:
@@ -47,9 +48,20 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
         type: Boolean
       },
 
+      /**
+       * The key to find a validator.
+       */
+      validator: {
+        type: String
+      },
+
       _previousValidInput: {
         type: String,
         value: ''
+      },
+
+      _validatorMeta: {
+        type: Object
       }
 
     },
@@ -58,7 +70,13 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
       'input': '_onInput'
     },
 
+    get _validator() {
+      return this._validatorMeta.byKey(this.validator);
+    },
+
     ready: function() {
+      this._validatorMeta = new Polymer.IronMeta({type: 'validator'});
+
       this._validateValue();
       this.bindValue = this.value;
     },
@@ -79,8 +97,15 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
         return;
       }
 
+      var valid;
+      if (this._validator) {
+        valid = this._validator.validate(this.value);
+      } else {
+        valid = this.validity.valid;
+      }
+
       var value;
-      if (!this.validity.valid) {
+      if (!valid) {
         value = this._previousValidInput;
       } else {
         value = this._previousValidInput = this.value;
