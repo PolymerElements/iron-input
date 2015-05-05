@@ -64,8 +64,14 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     },
 
     _bindValueChanged: function() {
-      this.value = this.bindValue;
-      this._validateValue();
+      // If this was called as a result of user input, then |_validateValue|
+      // has already been called in |_onInput|, and it doesn't need to be
+      // called again.
+      if (this.value != this.bindValue) {
+        this.value = this.bindValue;
+        this._validateValue();
+      }
+
       // manually notify because we don't want to notify until after setting value
       this.fire('bind-value-changed', {value: this.bindValue});
     },
@@ -75,12 +81,8 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     },
 
     _validateValue: function() {
-      if (!this.preventInvalidInput) {
-        return;
-      }
-
       var value;
-      if (!this.validity.valid) {
+      if (this.preventInvalidInput && !this.validity.valid) {
         value = this._previousValidInput;
       } else {
         value = this._previousValidInput = this.value;
