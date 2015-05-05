@@ -73,6 +73,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(input.value, input.bindValue, 'value equals to bindValue');
       });
 
+      test('changing the input triggers an event', function(done) {
+        var input = fixture('basic');
+
+        input.addEventListener('bind-value-changed', function(value) {
+          assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+          done();
+        });
+
+        input.value = "foo";
+        input._onInput();
+      });
+
       test('default value sets bindValue', function() {
         var input = fixture('has-value');
         assert.equal(input.bindValue, input.value, 'bindValue equals value');
