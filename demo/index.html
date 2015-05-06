@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <template is="x-autobind">
+  <template is="dom-bind">
 
     <section>
 
@@ -57,7 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
-    var scope = document.querySelector('template[is=x-autobind]');
+    var scope = document.querySelector('template[is=dom-bind]');
 
     scope.setValue = function(event) {
       if (!(event.target instanceof HTMLButtonElement)) {
