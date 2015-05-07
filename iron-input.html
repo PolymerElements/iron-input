@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 
 <!--
 By default you can only get notified of changes to an `input`'s `value` due to user input:
@@ -28,6 +29,10 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     is: 'iron-input',
 
     extends: 'input',
+
+    behaviors: [
+      Polymer.IronValidatableBehavior
+    ],
 
     properties: {
 
@@ -59,33 +64,49 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     },
 
     ready: function() {
-      this._validateValue();
+      this._ensureValidValue();
       this.bindValue = this.value;
     },
 
     _bindValueChanged: function() {
-      this.value = this.bindValue;
-      this._validateValue();
+      // If this was called as a result of user input, then |_validateValue|
+      // has already been called in |_onInput|, and it doesn't need to be
+      // called again.
+      if (this.value != this.bindValue) {
+        this.value = this.bindValue;
+        this._ensureValidValue();
+      }
+
       // manually notify because we don't want to notify until after setting value
       this.fire('bind-value-changed', {value: this.bindValue});
     },
 
     _onInput: function() {
-      this._validateValue();
+      this._ensureValidValue();
     },
 
-    _validateValue: function() {
-      if (!this.preventInvalidInput) {
-        return;
-      }
-
+    _ensureValidValue: function() {
       var value;
-      if (!this.validity.valid) {
+      /* rename with rc8 */
+      if (this.preventInvalidInput && !this.validate()) {
         value = this._previousValidInput;
       } else {
         value = this._previousValidInput = this.value;
       }
       this.bindValue = this.value = value;
+    },
+
+    /**
+     * Returns true if the value is valid. The validator provided in `validator` will be used first,
+     * then any constraints.
+     */
+    validate: function() {
+      if (this.hasValidator()) {
+        return Polymer.IronValidatableBehavior.validate.call(this, this.value);
+      } else {
+        this.invalid = !this.validity.valid;
+        return this.validity.valid;
+      }
     }
 
   })
