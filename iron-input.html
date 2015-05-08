@@ -73,7 +73,7 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
       // has already been called in |_onInput|, and it doesn't need to be
       // called again.
       if (this.value != this.bindValue) {
-        this.value = this.bindValue;
+        this._setValueAndPreserveCaretPosition(this.bindValue);
         this._ensureValidValue();
       }
 
@@ -93,7 +93,16 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
       } else {
         value = this._previousValidInput = this.value;
       }
-      this.bindValue = this.value = value;
+      // set value first to not call this method again from _bindValueChanged
+      this._setValueAndPreserveCaretPosition(value);
+      this.bindValue = value;
+    },
+
+    _setValueAndPreserveCaretPosition: function(value) {
+      var start = this.selectionStart;
+      var end = this.selectionEnd;
+      this.value = value;
+      this.setSelectionRange(start, end);
     },
 
     /**
