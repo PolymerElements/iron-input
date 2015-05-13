@@ -100,10 +100,21 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     },
 
     _setValueAndPreserveCaretPosition: function(value) {
-      var start = this.selectionStart;
-      var end = this.selectionEnd;
+      // Not all input types support selection.
+      if (!this.hasOwnProperty(this._canSelect)) {
+        var allowedTypes = ["text", "search", "password", "tel", "url"];
+        this._canSelect = allowedTypes.indexOf(this.type) != -1;
+      }
+
+      if (this._canSelect) {
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+      }
       this.value = value;
-      this.setSelectionRange(start, end);
+
+      if (this._canSelect) {
+        this.setSelectionRange(start, end);
+      }
     },
 
     /**
