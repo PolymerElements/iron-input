@@ -96,6 +96,7 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
       // set value first to not call this method again from _bindValueChanged
       this._setValueAndPreserveCaretPosition(value);
       this.bindValue = value;
+      this.validate();
     },
 
     _setValueAndPreserveCaretPosition: function(value) {
@@ -110,12 +111,15 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
      * then any constraints.
      */
     validate: function() {
+      var valid;
       if (this.hasValidator()) {
-        return Polymer.IronValidatableBehavior.validate.call(this, this.value);
+        valid = Polymer.IronValidatableBehavior.validate.call(this, this.value);
       } else {
         this.invalid = !this.validity.valid;
-        return this.validity.valid;
+        valid = this.validity.valid;
       }
+      this.fire('iron-input-validate');
+      return valid;
     }
 
   })
