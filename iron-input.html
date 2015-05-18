@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 
 <!--
 By default you can only get notified of changes to an `input`'s `value` due to user input:
@@ -31,7 +32,8 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     extends: 'input',
 
     behaviors: [
-      Polymer.IronValidatableBehavior
+      Polymer.IronValidatableBehavior,
+      Polymer.IronFormElementBehavior
     ],
 
     properties: {
