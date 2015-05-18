@@ -116,7 +116,7 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
     },
 
     _onKeydown: function(event) {
-      if (!this.preventInvalidInput && type !='number') {
+      if (!this.preventInvalidInput && this.type !='number') {
         return;
       }
       var regexp = this.patternRegExp;
