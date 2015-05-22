@@ -10,7 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
-<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 
 <script>
 
@@ -52,8 +51,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     extends: 'input',
 
     behaviors: [
-      Polymer.IronValidatableBehavior,
-      Polymer.IronFormElementBehavior
+      Polymer.IronValidatableBehavior
     ],
 
     properties: {
