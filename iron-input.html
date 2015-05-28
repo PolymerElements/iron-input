@@ -138,6 +138,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       return printable;
     },
 
+    // convert printable numpad keys to number keys
+    _correctNumpadKeys: function(keyCode) {
+      return (keyCode > 95 && keyCode < 112) ? keyCode - 48 : keyCode;
+    },
+
     _onKeydown: function(event) {
       if (!this.preventInvalidInput && this.type !== 'number') {
         return;
@@ -146,7 +151,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       if (!regexp) {
         return;
       }
-      var thisChar = String.fromCharCode(event.keyCode);
+      var thisChar = String.fromCharCode(this._correctNumpadKeys(event.keyCode));
       if (this._isPrintable(event.keyCode) && !regexp.test(thisChar)) {
         event.preventDefault();
       }
