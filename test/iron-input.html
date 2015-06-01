@@ -71,6 +71,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <template is="dom-bind" id="bind-to-object">
+    <input is="iron-input" id="input" bind-value="{{foo}}">
+  </template>
+
   <script>
 
     suite('basic', function() {
@@ -101,6 +105,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('default bindValue sets value', function() {
         var input = fixture('has-bind-value');
         assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+      });
+
+      test('set bindValue to undefined', function() {
+        var scope = document.getElementById('bind-to-object');
+        scope.foo = undefined;
+        assert.ok(!scope.$.input.bindValue, 'bindValue is falsy');
+        assert.ok(!scope.$.input.value, 'value is falsy');
       });
 
       test('validator used instead of constraints api if provided', function() {
