@@ -66,6 +66,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         set value to: <input> <button value="value">set</button>
       </p>
     </template>
+    <p>only allows these characters:
+    <code>!@#0123456789</code></p>
+    <input is="iron-input" allowed-pattern="[!@#0-9]" prevent-invalid-input>
+
   </div>
 
   <script>

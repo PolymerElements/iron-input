@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="prevent-invalid-input">
     <template>
-      <input is="iron-input" prevent-invalid-input pattern="[0-9]*">
+      <input is="iron-input" prevent-invalid-input pattern="[0-9]">
     </template>
   </test-fixture>
 
@@ -110,6 +110,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isTrue(input.invalid, 'input is invalid');
       });
 
+      test('prevent invalid input works in _onInput', function() {
+        var input = fixture('prevent-invalid-input');
+        input.value = '123';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+
+        input.value = '123foo';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+      });
     });
 
   </script>
