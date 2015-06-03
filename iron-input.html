@@ -211,8 +211,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      */
     validate: function() {
       // Empty, non-required input is valid.
-      if (!this.required && this.value == '')
+      if (!this.required && this.value == '') {
+        this.invalid = false;
         return true;
+      }
 
       var valid;
       if (this.hasValidator()) {
