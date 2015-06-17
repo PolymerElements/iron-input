@@ -97,7 +97,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     listeners: {
       'input': '_onInput',
-      'keypress': '_onKeypress'
+      'keypress': '_onKeypress',
+      'blur' : '_onBlur'
     },
 
     get _patternRegExp() {
@@ -141,6 +142,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       this.bindValue = this.value;
       this._previousValidInput = this.value;
       this._patternAlreadyChecked = false;
+    },
+
+    _onBlur:function(){
+      //Fired when user leaves the input
+      this.fire('iron-input-blur');
     },
 
     _isPrintable: function(event) {
