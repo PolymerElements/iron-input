@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../iron-input.html">
   <link rel="import" href="letters-only.html">
+  <link rel="import" href="disabled-input.html">
 
 </head>
 <body>
@@ -130,6 +131,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.value = '123foo';
         input._onInput();
         assert.equal(input.bindValue, '123');
+      });
+
+      test('disabled input doesn\'t throw on Firefox', function() {
+        var el = document.createElement('has-input');
+        assert.equal(el.$.input.bindValue, 'foo');
+        // 2-way bindings won't propagate until attached
+        document.body.appendChild(el);
+        Polymer.dom.flush();
+        assert.strictEqual(el.myInvalid, false);
+        assert.strictEqual(el.$.input.disabled, true);
       });
     });
 
