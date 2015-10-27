@@ -64,6 +64,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="automatically-prevent-invalid-input-if-allowed-pattern">
+    <template>
+      <input is="iron-input" allowed-pattern="[0-9]">
+    </template>
+  </test-fixture>
+
   <test-fixture id="has-validator">
     <template>
       <letters-only></letters-only>
@@ -130,6 +136,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.value = '123foo';
         input._onInput();
         assert.equal(input.bindValue, '123');
+      });
+
+      test('prevent invalid input works automatically when allowed pattern is set', function() {
+        var input = fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+        input.value = '123';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+
+        input.value = '123foo';
+        input._onInput();
+        assert.equal(input.bindValue, '123');
+
+        input.allowedPattern = '';
+        input.value = '#123foo BAR!';
+        input._onInput();
+        assert.equal(input.bindValue, '#123foo BAR!');
+
+        input.allowedPattern = '[a-zA-Z]';
+        input.value = 'foo';
+        input._onInput();
+        input.value = 'bar123';
+        input._onInput();
+        assert.equal(input.bindValue, 'foo');
       });
     });
 
