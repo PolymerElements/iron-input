@@ -10,9 +10,7 @@
     "polymer",
     "input"
   ],
-  "main": [
-    "iron-input.html"
-  ],
+  "main": "iron-input.html",
   "private": true,
   "repository": {
     "type": "git",
