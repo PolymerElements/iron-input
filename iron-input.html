@@ -28,6 +28,14 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
 
     <input is="iron-input" bind-value="{{myValue}}">
 
+`iron-input` of type "number" or "date" can use the `bind-value-as-number` property for two-way data binding.
+
+    <input is="iron-input" type="number" bind-value-as-number="{{myNumber}}">
+
+`iron-input` of type "date" can use `bind-value-as-date` property for two-way data binding.
+
+    <input is="iron-input" type="date" bind-value-as-date="{{myDate}}">
+
 ### Custom validators
 
 You can use custom validators that implement `Polymer.IronValidatorBehavior` with `<iron-input>`.
@@ -47,6 +55,28 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 @demo demo/index.html
 */
 
+  (function () {
+    /* Polyfill for browsers (e.g. IE 10) that don't implement or may have trouble with `valueAsNumber` */
+    'use strict';
+    var input = document.createElement('input');
+    input.setAttribute('type', 'number');
+    input.setAttribute('value', 2319);
+    if (!('valueAsNumber' in input) || input.value != input.valueAsNumber) {
+      if ('defineProperty' in Object && 'getPrototypeOf' in Object) {
+        Object.defineProperty(Object.getPrototypeOf(input), 'valueAsNumber', {
+          enumerable: true,
+          configurable: true,
+          get: function() {
+            return isNaN(this.value) ? NaN : parseFloat(this.value);
+          },
+          set: function(val) {
+            this.value = isNaN(val) ? '' : parseFloat(val) + '';
+          }
+        });
+      }
+    }
+  }());
+
   Polymer({
 
     is: 'iron-input',
@@ -65,6 +95,22 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       bindValue: {
         observer: '_bindValueChanged',
         type: String
+      },
+
+      /**
+       * Use this property instead of `value-as-number` for two-way data binding.
+       */
+      bindValueAsNumber: {
+        observer: '_bindValueAsNumberChanged',
+        type: Number
+      },
+
+      /**
+       * Use this property instead of `value-as-date` for two-way data binding.
+       */
+      bindValueAsDate: {
+        observer: '_bindValueAsDateChanged',
+        type: Date
       },
 
       /**
@@ -118,6 +164,12 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     ready: function() {
+      this._updateBindValues();
+    },
+
+    _updateBindValues: function(){
+      this.bindValueAsNumber = this.valueAsNumber;
+      this.bindValueAsDate = this.valueAsDate;
       this.bindValue = this.value;
     },
 
@@ -125,11 +177,72 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      * @suppress {checkTypes}
      */
     _bindValueChanged: function() {
-      if (this.value !== this.bindValue) {
-        this.value = !(this.bindValue || this.bindValue === 0) ? '' : this.bindValue;
+      if (typeof this.bindValue !== 'string') {
+        // it will trigger another _bindValueChanged event
+        this.bindValue = !(this.bindValue || this.bindValue === 0) ? '' : this.bindValue + '';
+      } else {
+        if (this.value !== this.bindValue) {
+          this.value = this.bindValue;
+          this._updateBindValues();
+        }
+        // manually notify because we don't want to notify until after setting value
+        this.fire('bind-value-changed', {value: this.bindValue});
       }
-      // manually notify because we don't want to notify until after setting value
-      this.fire('bind-value-changed', {value: this.bindValue});
+    },
+
+    _bindValueAsNumberChanged: function() {
+      if (this.type !== 'number' && this.type !== 'date') {
+        return;
+      }
+      // ensure it is a number
+      if (typeof this.bindValueAsNumber !== 'number') {
+        // it will trigger another _bindValueAsNumberChanged event
+        if (isNaN(this.bindValueAsNumber)) {
+          this.bindValueAsNumber = NaN;
+        } else {
+          this.bindValueAsNumber = parseFloat(this.bindValueAsNumber);
+        }
+      } else {
+        // NaN is != from NaN, must check if at least one of them is a number!
+        if (this.valueAsNumber !== this.bindValueAsNumber && (this.valueAsNumber === this.valueAsNumber || this.bindValueAsNumber === this.bindValueAsNumber)) {
+          // browsers like safari would crash if setting input.valueAsNumber = NaN;
+          // so by setting the value, browser will also set the valueAsNumber
+          // checking if NaN (10x faster like this)
+          if(this.bindValueAsNumber !== this.bindValueAsNumber) {
+            this.value = '';
+          } else {
+            this.valueAsNumber = this.bindValueAsNumber;
+          }
+          this._updateBindValues();
+        }
+        // manually notify because we don't want to notify until after setting valueAsNumber
+        this.fire('bind-value-as-number-changed', {value: this.bindValueAsNumber});
+      }
+    },
+
+    _bindValueAsDateChanged: function() {
+      if (this.type !== 'date') {
+        return;
+      }
+      // ensure it is a Date object
+      if (!this._isValidDate(this.bindValueAsDate) && this.bindValueAsDate !== null) {
+        // it will trigger another _bindValueAsDateChanged event
+        this.bindValueAsDate = null;
+      } else {
+        // get toDateString for old and new value
+        var oldValue = this._isValidDate(this.valueAsDate) ? this.valueAsDate.toDateString() : null;
+        var newValue = this._isValidDate(this.bindValueAsDate) ? this.bindValueAsDate.toDateString() : null;
+        if (oldValue !== newValue) {
+          this.valueAsDate = this.bindValueAsDate;
+          this._updateBindValues();
+        }
+        // manually notify because we don't want to notify until after setting valueAsDate
+        this.fire('bind-value-as-date-changed', {value: this.bindValueAsDate});
+      }
+    },
+
+    _isValidDate: function(date) {
+      return (date instanceof Date && !isNaN(date.valueOf()));
     },
 
     _allowedPatternChanged: function() {
@@ -146,8 +259,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           this.value = this._previousValidInput;
         }
       }
-
-      this.bindValue = this.value;
+      this._updateBindValues();
       this._previousValidInput = this.value;
       this._patternAlreadyChecked = false;
     },

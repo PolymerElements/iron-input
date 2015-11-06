@@ -77,6 +77,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="number">
+    <template>
+      <input is="iron-input" type="number" bind-value-as-number="2">
+    </template>
+  </test-fixture>
+
+  <test-fixture id="date">
+    <template>
+      <input is="iron-input" type="date" bind-value-as-date="2015-10-10">
+    </template>
+  </test-fixture>
+
   <template is="dom-bind" id="bind-to-object">
     <input is="iron-input" id="input" bind-value="{{foo}}">
   </template>
@@ -105,6 +117,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('default value sets bindValue', function() {
         var input = fixture('has-value');
+        assert.strictEqual(input.bindValue, 'foobar', 'bindValue equals `foobar`');
         assert.equal(input.bindValue, input.value, 'bindValue equals value');
       });
 
@@ -160,6 +173,133 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input._onInput();
         assert.equal(input.bindValue, 'foo');
       });
+
+    });
+
+    suite('number', function(){
+
+      var input;
+      var numbers = ['0', '1', '1.1', '1.1e+1', '00010.00', 1 , 200];
+      var notNumbers = ['a', '1 1', 'a123', '12abc', 'zero'];
+
+      setup(function(){
+        input = fixture('number');
+      });
+
+      test('default bindValueAsNumber sets bindValue, valueAsNumber and value', function() {
+        assert.strictEqual(input.bindValue, '2');
+        assert.strictEqual(input.value, input.bindValue);
+        assert.strictEqual(input.bindValueAsNumber, parseFloat(input.bindValue));
+        assert.strictEqual(input.bindValueAsNumber, input.valueAsNumber);
+      });
+
+      test('changes of bindValue update bindValueAsNumber', function() {
+        for (var i in numbers) {
+          input.bindValue = numbers[i];
+          assert.strictEqual(input.value, input.bindValue);
+          assert.strictEqual(input.valueAsNumber, parseFloat(input.bindValue));
+          assert.strictEqual(input.bindValueAsNumber, input.valueAsNumber);
+        }
+      });
+
+      test('bindValueAsNumber accepts numbers', function() {
+        for (var i in numbers) {
+          input.bindValueAsNumber = numbers[i];
+          assert.isTrue(typeof input.bindValueAsNumber === 'number');
+          assert.isFalse(isNaN(input.valueAsNumber));
+          assert.strictEqual(input.valueAsNumber, input.bindValueAsNumber);
+          assert.strictEqual(input.bindValue, input.value);
+          assert.strictEqual(input.value, input.valueAsNumber + '');
+        }
+      });
+
+      test('bindValueAsNumber doesn\'t accept strings', function() {
+        for (var i in notNumbers) {
+          input.bindValueAsNumber = notNumbers[i];
+          assert.isTrue(typeof input.bindValueAsNumber === 'number');
+          assert.isTrue(isNaN(input.valueAsNumber));
+          assert.isTrue(isNaN(input.bindValueAsNumber));
+          assert.strictEqual(input.bindValue, input.value);
+          assert.strictEqual(input.value, '');
+        }
+      });
+
+      test('notify changes', function() {
+        var bv = sinon.stub();
+        var bvan = sinon.stub();
+        input.addEventListener('bind-value-changed', bv);
+        input.addEventListener('bind-value-as-number-changed', bvan);
+        // set Number should update bindValue and bindValueAsNumber
+        input.bindValueAsNumber = 10;
+        assert.equal(bv.callCount, 1);
+        assert.equal(bvan.callCount, 1);
+        assert.equal(bvad.callCount, 0);
+        // count should be increased of one
+        input.bindValueAsNumber = '11';
+        assert.equal(bv.callCount, 2);
+        assert.equal(bvan.callCount, 2);
+      });
+    });
+
+    suite('date', function() {
+
+      var input = document.createElement('input');
+      input.setAttribute('type', 'date');
+      if (input.type !== 'date') {
+        console.warn('input type="date" is not supported by this browser!');
+        return;
+      }
+
+      var notDates = ['a', 'a123', '1995 abc', 'tomorrow'];
+
+      setup(function(){
+        input = fixture('date');
+      });
+
+      test('default bindValueAsDate sets bindValue, value, bindValueAsNumber, valueAsNumber and valueAsDate', function() {
+        checkDate(input, '2015-10-10');
+      });
+
+      test('bindValueAsDate accepts Date objects', function() {
+        input.bindValueAsDate = new Date('2015-10-11');
+        checkDate(input, '2015-10-11');
+      });
+
+      test('bindValueAsDate handles non Date objects', function() {
+        input.bindValueAsDate = '2015-10-10';
+        assert.notOk(input.valueAsDate);
+        assert.notOk(input.bindValueAsDate);
+      });
+
+      //TODO uncomment this test once Polymer.Bind._propertySetter knows how to handle Date objects
+      // test('notify changes', function() {
+      //   var bv = sinon.stub();
+      //   var bvan = sinon.stub();
+      //   var bvad = sinon.stub();
+      //   input.addEventListener('bind-value-changed', bv);
+      //   input.addEventListener('bind-value-as-number-changed', bvan);
+      //   input.addEventListener('bind-value-as-date-changed', bvad);
+      //   // set Number should update bindValue and bindValueAsNumber
+      //   input.bindValueAsDate = new Date('2015-01-01');
+      //   assert.equal(bv.callCount, 1);
+      //   assert.equal(bvan.callCount, 1);
+      //   assert.equal(bvad.callCount, 1);
+      //   // count should be increased of one
+      //   input.bindValueAsDate = new Date('2015-01-02');
+      //   assert.equal(bv.callCount, 2);
+      //   assert.equal(bvan.callCount, 2);
+      //   assert.equal(bvad.callCount, 2);
+      // });
+
+      function checkDate(input, dateString){
+        var valueOf = new Date(dateString).valueOf();
+        assert.strictEqual(input.bindValue, dateString);
+        assert.strictEqual(input.value, dateString);
+        assert.strictEqual(input.bindValueAsNumber, valueOf);
+        assert.strictEqual(input.valueAsNumber, valueOf);
+        assert.strictEqual(input.bindValueAsDate.valueOf(), valueOf);
+        assert.strictEqual(input.valueAsDate.valueOf(), valueOf);
+      }
     });
 
   </script>
