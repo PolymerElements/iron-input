@@ -105,8 +105,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       var pattern;
       if (this.allowedPattern) {
         pattern = new RegExp(this.allowedPattern);
-      } else if (this.pattern) {
-        pattern = new RegExp(this.pattern);
       } else {
         switch (this.type) {
           case 'number':
