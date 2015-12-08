@@ -108,19 +108,44 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       if (this.allowedPattern) {
         pattern = new RegExp(this.allowedPattern);
       } else {
-        switch (this.type) {
+        var type = this.getAttribute('type') || this.type;
+        switch (type) {
           case 'number':
             pattern = /[0-9.,e-]/;
+            break;
+          case 'date':
+            pattern = /[0-9.-]/;
+            break;
+          case 'time':
+            pattern = /[0-9:]/;
             break;
         }
       }
       return pattern;
     },
-
+    
+    // sets max length for type->date and type->time
+    _setTypeAttributes: function() {
+       var type = this.getAttribute('type') || this.type;
+        switch (type) {
+          case 'number':
+            break;
+          case 'date':
+            this.setAttribute('maxlength', 10);
+            break;
+          case 'time':
+            this.setAttribute('maxlength', 5);
+            break;
+        }
+    },
+    
     ready: function() {
       this.bindValue = this.value;
     },
 
+    attached: function() {
+      this._setTypeAttributes();
+    },
     /**
      * @suppress {checkTypes}
      */
@@ -240,6 +265,35 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
       this.fire('iron-input-validate');
       return valid;
+    },
+    // TODO create custom validator and do this inside it
+    _typeValidation: function() {
+       var type = this.getAttribute('type') || this.type;
+        var regexps = [];
+        switch(type) {
+          case 'date':
+            regexps.push(/^([0-9]{4})([\-])([1][0-2]|[0]?[1-9])([\-])([3][0-1]|[1-2][0-9]|[0]?[1-9])$/);
+            regexps.push(/^([3][0-1]|[1-2][0-9]|[0]?[1-9])([\.])([1][0-2]|[0]?[1-9])([\.])([0-9]{4})$/);
+          break;
+          case 'time':
+            regexps.push(/^([2][0-3]|[0-1][0-9])([\:])([0-5][0-9])$/);
+          break;
+        }
+        // 'Hack' by setting custom validity to avoid wrong format
+        // date foramt -> dd.mm.yyyy
+        // time foramt -> hh:mm
+        if (regexps.length) {
+          for (var i = 0; i < regexps.length; i++) {
+            var regexp = regexps[i];
+            var test = regexp.test(this.value);
+            if (!test) {
+              this.setCustomValidity('patternMismatch');
+            } else {
+              this.setCustomValidity('');
+              return;
+            }
+          };
+        }
     }
 
   });
