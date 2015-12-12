@@ -118,15 +118,25 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     ready: function() {
-      this.bindValue = this.value;
+      if (this.type === 'number') {
+        this.bindValue = this.valueAsNumber;
+      } else {
+        this.bindValue = this.value;
+      }
     },
 
     /**
      * @suppress {checkTypes}
      */
     _bindValueChanged: function() {
-      if (this.value !== this.bindValue) {
-        this.value = !(this.bindValue || this.bindValue === 0) ? '' : this.bindValue;
+      if (this.type === 'number'){
+        if (this.valueAsNumber !== this.bindValue) {
+          this.valueAsNumber = !(this.bindValue || this.bindValue === 0) ? 0 : this.bindValue;
+        }
+      }else{
+        if (this.value !== this.bindValue) {
+          this.value = !(this.bindValue || this.bindValue === 0) ? '' : this.bindValue;
+        }
       }
       // manually notify because we don't want to notify until after setting value
       this.fire('bind-value-changed', {value: this.bindValue});
@@ -147,7 +157,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         }
       }
 
-      this.bindValue = this.value;
+      if (this.type === 'number') {
+        this.bindValue = this.valueAsNumber;
+      } else {
+        this.bindValue = this.value;
+      }
       this._previousValidInput = this.value;
       this._patternAlreadyChecked = false;
     },
