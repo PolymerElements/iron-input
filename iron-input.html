@@ -78,7 +78,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       /**
        * Regular expression expressing a set of characters to enforce the validity of input characters.
-       * The recommended value should follow this format: `[a-ZA-Z0-9.+-!;:]` that list the characters 
+       * The recommended value should follow this format: `[a-ZA-Z0-9.+-!;:]` that list the characters
        * allowed as input.
        */
       allowedPattern: {
@@ -101,6 +101,25 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     listeners: {
       'input': '_onInput',
       'keypress': '_onKeypress'
+    },
+
+    registered: function() {
+      if (/Firefox|Trident/.test(navigator.userAgent)) {
+        this._origDispatchEvent = this.dispatchEvent;
+        this.dispatchEvent = this._dispatchEventFirefoxIE;
+      }
+    },
+
+    _dispatchEventFirefoxIE: function() {
+      // Due to Firefox bug, events fired on disabled form controls can throw
+      // errors; furthermore, neither IE nor Firefox will actually dispatch
+      // events from disabled form controls; as such, we toggle disable around
+      // the dispatch to allow notifying properties to notify
+      // See issue #47 for details
+      var disabled = this.disabled;
+      this.disabled = false;
+      this._origDispatchEvent.apply(this, arguments);
+      this.disabled = disabled;
     },
 
     get _patternRegExp() {

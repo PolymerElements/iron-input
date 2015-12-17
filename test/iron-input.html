@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../iron-input.html">
   <link rel="import" href="letters-only.html">
+  <link rel="import" href="disabled-input.html">
 
 </head>
 <body>
@@ -88,6 +89,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="bind-to-object">
     <input is="iron-input" id="input" bind-value="{{foo}}">
   </template>
+
+  <test-fixture id="disabled-input">
+    <template>
+      <disabled-input></disabled-input>
+    </template>
+  </test-fixture>
 
   <script>
 
@@ -202,8 +209,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input._onInput();
         assert.equal(input.bindValue, 'foo');
       });
-    });
 
+      test('disabled input doesn\'t throw on Firefox', function() {
+        var el = fixture('disabled-input');
+        var input = el.$.input;
+
+        assert.equal(input.bindValue, 'foo');
+
+        assert.strictEqual(el.myInvalid, false);
+        assert.strictEqual(input.disabled, true);
+      });
+    });
   </script>
 
 </body>
