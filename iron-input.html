@@ -119,7 +119,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     ready: function() {
       if (this.type === 'number') {
-        this.bindValue = this.valueAsNumber;
+        this.bindValue = parseFloat(this.value);
       } else {
         this.bindValue = this.value;
       }
@@ -130,8 +130,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      */
     _bindValueChanged: function() {
       if (this.type === 'number'){
-        if (this.valueAsNumber !== this.bindValue) {
-          this.valueAsNumber = !(this.bindValue || this.bindValue === 0) ? 0 : this.bindValue;
+        if (parseFloat(this.value) !== this.bindValue) {
+          this.value = !(this.bindValue || this.bindValue === 0) ? 0 : this.bindValue;
         }
       }else{
         if (this.value !== this.bindValue) {
@@ -158,7 +158,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
 
       if (this.type === 'number') {
-        this.bindValue = this.valueAsNumber;
+        this.bindValue = parseFloat(this.value);
       } else {
         this.bindValue = this.value;
       }
