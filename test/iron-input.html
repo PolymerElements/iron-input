@@ -141,6 +141,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isFalse(input.invalid, 'input is valid');
       });
 
+      test('set bindValue to false', function() {
+        var scope = document.getElementById('bind-to-object');
+        scope.foo = false;
+        assert.isFalse(scope.$.input.bindValue);
+        assert.equal(scope.$.input.value, 'false');
+      });
+
       test('validator used instead of constraints api if provided', function() {
         var input = fixture('has-validator')[1];
         input.value = '123';
