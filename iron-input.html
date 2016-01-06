@@ -104,10 +104,27 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     registered: function() {
-      if (/Firefox|Trident/.test(navigator.userAgent)) {
+      // Feature detect whether we need to patch dispatchEvent (i.e. on FF and IE).
+      if (!this._canDispatchEventOnDisabled()) {
         this._origDispatchEvent = this.dispatchEvent;
         this.dispatchEvent = this._dispatchEventFirefoxIE;
       }
+    },
+
+    _canDispatchEventOnDisabled: function() {
+      var input = document.createElement('input');
+      var canDispatch = false;
+      input.disabled = true;
+
+      input.addEventListener('feature-check-dispatch-event', function() {
+        canDispatch = true;
+      });
+
+      try {
+        input.dispatchEvent(new Event('feature-check-dispatch-event'));
+      } catch(e) {}
+
+      return canDispatch;
     },
 
     _dispatchEventFirefoxIE: function() {
