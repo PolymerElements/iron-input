@@ -235,8 +235,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       if (this.hasValidator()) {
         valid = Polymer.IronValidatableBehavior.validate.call(this, this.value);
       } else {
-        this.invalid = !this.validity.valid;
-        valid = this.validity.valid;
+        valid = this.checkValidity();
+        this.invalid = !valid;
       }
       this.fire('iron-input-validate');
       return valid;
