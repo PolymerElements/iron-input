@@ -6,10 +6,13 @@ https://github.com/PolymerElements/ContributionGuide/blob/master/CONTRIBUTING.md
 If you edit that file, it will get updated everywhere else.
 If you edit this file, your changes will get overridden :)
 -->
-# Polymer Elements
-## Guide for Contributors
+# Contributing to the Polymer Elements
 
-Polymer Elements are built in the open, and the Polymer authors eagerly encourage any and all forms of community contribution. When contributing, please follow these guidelines:
+🎉First of all, thank you for taking time to contribute! 🎉
+
+Polymer Elements are built in the open, and the Polymer authors eagerly encourage any and all forms of community contribution.When contributing, please follow these guidelines:
+
+Each element is "owned" by a specific member of the Polymer team, which you can find in the **OWNERS.md** file. They will be your main point of contact, so we recommend cc-ing them when filing an issue or submitting a PR.
 
 ### Filing Issues
 
