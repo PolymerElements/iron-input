@@ -86,6 +86,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="native-and-custom-validator">
+    <template>
+      <letters-only></letters-only>
+      <input is="iron-input" validator="letters-only" pattern="[a-c]*">
+    </template>
+  </test-fixture>
+
   <template is="dom-bind" id="bind-to-object">
     <input is="iron-input" id="input" bind-value="{{foo}}">
   </template>
@@ -225,6 +232,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         assert.strictEqual(el.myInvalid, false);
         assert.strictEqual(input.disabled, true);
+      });
+
+      test('browser validation beats custom validation', function() {
+        var input = fixture('native-and-custom-validator')[1];
+        // The input allows any letters, but the browser only allows one
+        // of [abc].
+        input.value = 'aaaa';
+        input.validate();
+        assert.isFalse(input.invalid, 'input is valid');
+
+        // The validator allows this, but the browser doesn't.
+        input.value = 'zzz';
+        input.validate();
+        assert.isTrue(input.invalid, 'input is invalid');
       });
     });
   </script>
