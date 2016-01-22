@@ -68,18 +68,20 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       /**
-       * Set to true to prevent the user from entering invalid input. The new input characters are
-       * matched with `allowedPattern` if it is set, otherwise it will use the `type` attribute (only
-       * supported for `type=number`).
+       * Set to true to prevent the user from entering invalid input. If `allowedPattern` is set, 
+       * The new input characters are matched with that. If more than one character is typed or pasted in,
+       * that input string will be ignored entirely if one or more characters of the 
+       * string do not match the `allowedPattern`. If `allowedPattern` is not set, it will use
+       * the `type` attribute (only supported for `type=number`).
        */
       preventInvalidInput: {
         type: Boolean
       },
 
       /**
-       * Regular expression expressing a set of characters to enforce the validity of input characters.
-       * The recommended value should follow this format: `[a-ZA-Z0-9.+-!;:]` that list the characters
-       * allowed as input.
+       * Regular expression for the set of allowed characters for `value`.
+       * Note that this pattern is checked against individual characters and not the `value` as a whole.
+       * The recommended value should follow this format: `[a-ZA-Z0-9.+-!;:]`
        */
       allowedPattern: {
         type: String,
