@@ -12,9 +12,9 @@ thing! https://github.com/PolymerLabs/tedium/issues
 
 -->
 
-[![Build Status](https://travis-ci.org/PolymerElements/iron-input.svg?branch=master)](https://travis-ci.org/PolymerElements/iron-input)
+[![Build status](https://travis-ci.org/PolymerElements/iron-input.svg?branch=master)](https://travis-ci.org/PolymerElements/iron-input)
 
-_[Demo and API Docs](https://elements.polymer-project.org/elements/iron-input)_
+_[Demo and API docs](https://elements.polymer-project.org/elements/iron-input)_
 
 
 ##&lt;iron-input&gt;
