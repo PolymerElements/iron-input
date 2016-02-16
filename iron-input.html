@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 
 <script>
@@ -115,6 +116,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
     },
 
+    created: function() {
+      Polymer.IronA11yAnnouncer.requestAvailability();
+    },
+
     _canDispatchEventOnDisabled: function() {
       var input = document.createElement('input');
       var canDispatch = false;
@@ -183,6 +188,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       if (this.preventInvalidInput && !this._patternAlreadyChecked) {
         var valid = this._checkPatternValidity();
         if (!valid) {
+          this._announceInvalidCharacter('Invalid string of characters not entered.');
           this.value = this._previousValidInput;
         }
       }
@@ -243,6 +249,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       var thisChar = String.fromCharCode(event.charCode);
       if (this._isPrintable(event) && !regexp.test(thisChar)) {
         event.preventDefault();
+        this._announceInvalidCharacter('Invalid character ' + thisChar + ' not entered.');
       }
     },
 
@@ -283,6 +290,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       this.invalid = !valid;
       this.fire('iron-input-validate');
       return valid;
+    },
+
+    _announceInvalidCharacter: function(message) {
+      this.fire('iron-announce', { text: message });
     }
   });
 
