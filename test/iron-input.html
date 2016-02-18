@@ -230,8 +230,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         assert.equal(input.bindValue, 'foo');
 
-        assert.strictEqual(el.myInvalid, false);
-        assert.strictEqual(input.disabled, true);
+        assert.isFalse(el.myInvalid);
+        assert.isTrue(input.disabled);
       });
 
       test('browser validation beats custom validation', function() {
@@ -246,6 +246,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.value = 'zzz';
         input.validate();
         assert.isTrue(input.invalid, 'input is invalid');
+      });
+    });
+
+    suite('a11y', function() {
+      test('announces invalid characters when _onInput is called', function() {
+        var input = fixture('prevent-invalid-input');
+        input.addEventListener('iron-announce', function(event) {
+          assert.equal(event.detail.text, 'Invalid string of characters not entered.');
+        });
+        input.value = 'foo';
+        input._onInput();
+      });
+
+      test('announces invalid characters on keypress', function() {
+        var input = fixture('prevent-invalid-input');
+        input.addEventListener('iron-announce', function(event) {
+          assert.equal(event.detail.text, 'Invalid character a not entered.');
+        });
+
+        // Simulate key press event.
+        var event = new CustomEvent('keypress', {
+          bubbles: true,
+          cancelable: true
+        });
+        event.charCode = 97 /* a */;
+        input.dispatchEvent(event);
       });
     });
   </script>
