@@ -11,7 +11,6 @@
     "input"
   ],
   "main": "iron-input.html",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/PolymerElements/iron-input.git"
