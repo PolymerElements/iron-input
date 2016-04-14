@@ -149,7 +149,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       // See issue #47 for details
       var disabled = this.disabled;
       this.disabled = false;
-      var defaultPrevented = this._origDispatchEvent.call(this, event);
+      var defaultPrevented = this._origDispatchEvent(event);
       this.disabled = disabled;
       return defaultPrevented
     },
