@@ -21,7 +21,7 @@
   "ignore": [],
   "dependencies": {
     "iron-a11y-announcer": "PolymerElements/iron-a11y-announcer#^1.0.0",
-    "iron-validatable-behavior": "PolymerElements/iron-validatable-behavior#^1.0.0",
+    "iron-validatable-behavior": "https://github.com/tlouisse/iron-validatable-behavior.git#feature/multipleValidators",
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
@@ -31,5 +31,9 @@
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "resolutions": {
+    "iron-validatable-behavior": "feature/multipleValidators",
+    "iron-validator-behavior": "feature/multipleValidators"
   }
 }

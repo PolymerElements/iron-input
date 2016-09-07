@@ -278,20 +278,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      * @return {boolean} True if the value is valid.
      */
     validate: function() {
-      // First, check what the browser thinks. Some inputs (like type=number)
-      // behave weirdly and will set the value to "" if something invalid is
-      // entered, but will set the validity correctly.
-      var valid =  this.checkValidity();
+      // Validatable is called first, so it will keep track of all individual states of validators that can be applied to it.
+      var validatableOutcome = Polymer.IronValidatableBehavior.validate.call(this, this.value);
 
-      // Only do extra checking if the browser thought this was valid.
-      if (valid) {
-        // Empty, required input is invalid
-        if (this.required && this.value === '') {
-          valid = false;
-        } else if (this.hasValidator()) {
-          valid = Polymer.IronValidatableBehavior.validate.call(this, this.value);
-        }
-      }
+      var requiredValid = this.required ? this.value !== '' : true;
+      var valid = validatableOutcome && this.checkValidity() && requiredValid;
 
       this.invalid = !valid;
       this.fire('iron-input-validate');

@@ -248,6 +248,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.validate();
         assert.isTrue(input.invalid, 'input is invalid');
       });
+
+      test('custom validators will be called when browser validation results in invalid state'/* this enables error reporting per validator */, function() {
+        var node = fixture('native-and-custom-validator');
+        var validator = node[0];
+        var input = node[1];
+        sinon.spy(validator, 'validate');
+        // The validator allows this, but the browser doesn't.
+        input.value = 'zzz';
+        input.validate();
+        assert(validator.validate.called);
+      });
+
     });
 
     suite('a11y', function() {
