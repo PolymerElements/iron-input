@@ -28,75 +28,99 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="basic">
     <template>
-      <input is="iron-input">
+      <iron-input>
+        <input>
+      </iron-input>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="programmatic">
+    <template>
+      <iron-input></iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="has-value">
     <template>
-      <input is="iron-input" value="foobar">
+      <iron-input>
+        <input value="foobar">
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="has-bind-value">
     <template>
-      <input is="iron-input" bind-value="foobar">
+      <iron-input bind-value="foobar">
+        <input>
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="prevent-invalid-input">
     <template>
-      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]">
-    </template>
-  </test-fixture>
-
-  <test-fixture id="prevent-invalid-input-with-pattern">
-    <template>
-      <input is="iron-input" prevent-invalid-input pattern="[a-zA-Z]{3}[0-9]*">
+      <iron-input allowed-pattern="[0-9]">
+        <input>
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="prevent-invalid-input-has-value">
     <template>
-      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]" value="foobar">
+      <iron-input allowed-pattern="[0-9]">
+        <input value="foobar">
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="prevent-invalid-input-has-bind-value">
     <template>
-      <input is="iron-input" prevent-invalid-input allowed-pattern="[0-9]" bind-value="foobar">
+      <iron-input allowed-pattern="[0-9]" bind-value="foobar">
+        <input>
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="automatically-prevent-invalid-input-if-allowed-pattern">
     <template>
-      <input is="iron-input" allowed-pattern="[0-9]">
+      <iron-input allowed-pattern="[0-9]">
+        <input>
+      </iron-input>
     </template>
   </test-fixture>
 
-  <test-fixture id="no-validator">
+  <test-fixture id="basic-validation">
     <template>
-      <input is="iron-input" pattern="[a-zA-Z]{3}[0-9]*">
+      <iron-input>
+        <input pattern="[a-zA-Z]{3}[0-9]*">
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="has-validator">
     <template>
       <letters-only></letters-only>
-      <input is="iron-input" validator="letters-only" pattern="[0-9]*">
+      <iron-input validator="letters-only">
+        <input pattern="[0-9]*">
+      </iron-input>
     </template>
   </test-fixture>
 
   <test-fixture id="native-and-custom-validator">
     <template>
       <letters-only></letters-only>
-      <input is="iron-input" validator="letters-only" pattern="[a-c]*">
+      <iron-input validator="letters-only">
+        <input pattern="[a-c]*">
+      </iron-input>
     </template>
   </test-fixture>
 
-  <template is="dom-bind" id="bind-to-object">
-    <input is="iron-input" id="input" bind-value="{{foo}}">
-  </template>
+  <dom-bind id="bind-to-object">
+    <template>
+      <iron-input id="input" bind-value="{{foo}}">
+        <input>
+      </iron-input>
+    </template>
+  </dom-bind>
 
   <test-fixture id="disabled-input">
     <template>
@@ -107,162 +131,197 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
 
     suite('basic', function() {
+      test('can initialize programmatically', function(done) {
+        var ironInput = fixture('programmatic');
+        assert.isNull(ironInput.querySelector('input'));
+
+        ironInput.appendChild(document.createElement('input'));
+        var input = ironInput.querySelector('input');
+        assert.ok(input);
+
+        // Mutation observer is async, so wait one tick.
+        Polymer.Base.async(function() {
+          assert.ok(ironInput._inputElement);
+
+          // Updating bind-value updates the input's value.
+          ironInput.bindValue = 'foobar';
+          assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
+
+          // Updating the input's value updates bind-value;
+          input.value = 'foo';
+          ironInput._onInput();
+          assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
+
+          done();
+        }, 1);
+      });
 
       test('setting bindValue sets value', function() {
-        var input = fixture('basic');
-        input.bindValue = 'foobar';
-        assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+        var ironInput = fixture('basic');
+        var input = ironInput.querySelector('input');
+        ironInput.bindValue = 'foobar';
+        assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
       });
 
       test('changing the input triggers an event', function(done) {
-        var input = fixture('basic');
+        var ironInput = fixture('basic');
+        var input = ironInput.querySelector('input');
 
-        input.addEventListener('bind-value-changed', function(value) {
-          assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+        ironInput.addEventListener('bind-value-changed', function(value) {
+          assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
           done();
         });
 
-        input.value = "foo";
-        input._onInput();
+        input.value = 'foo';
+        ironInput._onInput();
       });
 
       test('default value sets bindValue', function() {
-        var input = fixture('has-value');
-        assert.equal(input.bindValue, input.value, 'bindValue equals value');
+        var ironInput = fixture('has-value');
+        var input = ironInput.querySelector('input');
+        assert.equal(ironInput.bindValue, input.value, 'input value equals to iron-input bindValue');
       });
 
       test('default bindValue sets value', function() {
-        var input = fixture('has-bind-value');
-        assert.equal(input.value, input.bindValue, 'value equals to bindValue');
+        var ironInput = fixture('has-bind-value');
+        var input = ironInput.querySelector('input');
+        assert.equal(ironInput.bindValue, input.value, 'input value equals to iron-input bindValue');
       });
 
       test('set bindValue to undefined', function() {
         var scope = document.getElementById('bind-to-object');
         scope.foo = undefined;
-        assert.ok(!scope.$.input.bindValue, 'bindValue is falsy');
-        assert.ok(!scope.$.input.value, 'value is falsy');
-      });
-
-      test('can validate using a complex regex', function() {
-        var input = fixture('no-validator');
-        input.value = '123';
-        input.validate();
-        assert.isTrue(input.invalid, 'input is invalid');
-        input.value = 'foo';
-        input.validate();
-        assert.isFalse(input.invalid, 'input is valid');
-        input.value = 'foo123';
-        input.validate();
-        assert.isFalse(input.invalid, 'input is valid');
+        var ironInput = scope.$.input;
+        var input = ironInput.querySelector('input');
+        assert.ok(!ironInput.bindValue, 'ironInput bindValue is falsy');
+        assert.ok(!input.value, 'input value is falsy');
       });
 
       test('set bindValue to false', function() {
         var scope = document.getElementById('bind-to-object');
         scope.foo = false;
-        assert.isFalse(scope.$.input.bindValue);
-        assert.equal(scope.$.input.value, 'false');
-      });
-
-      test('validator used instead of constraints api if provided', function() {
-        var input = fixture('has-validator')[1];
-        input.value = '123';
-        input.validate();
-        assert.isTrue(input.invalid, 'input is invalid');
+        var ironInput = scope.$.input;
+        var input = ironInput.querySelector('input');
+        assert.isFalse(ironInput.bindValue);
+        assert.equal(input.value, 'false');
       });
 
       test('prevent invalid input works in _onInput', function() {
-        var input = fixture('prevent-invalid-input');
+        var ironInput = fixture('prevent-invalid-input');
+        var input = ironInput.querySelector('input');
         input.value = '123';
-        input._onInput();
-        assert.equal(input.bindValue, '123');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '123');
 
         input.value = '123foo';
-        input._onInput();
-        assert.equal(input.bindValue, '123');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '123');
       });
 
       test('inputs can be validated', function() {
-        var input = fixture('prevent-invalid-input-with-pattern');
+        var ironInput = fixture('basic-validation');
+        var input = ironInput.querySelector('input');
+
         input.value = '123';
-        input._onInput();
-        assert.equal(input.bindValue, '123');
-        input.validate();
-        assert.isTrue(input.invalid, 'input is invalid');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '123');
+        ironInput.validate();
+        assert.isTrue(ironInput.invalid, 'input is invalid');
 
         input.value = 'foo';
-        input._onInput();
-        assert.equal(input.bindValue, 'foo');
-        input.validate();
-        assert.isFalse(input.invalid, 'input is valid');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, 'foo');
+        ironInput.validate();
+        assert.isFalse(ironInput.invalid, 'input is valid');
 
         input.value = 'foo123';
-        input._onInput();
-        assert.equal(input.bindValue, 'foo123');
-        input.validate();
-        assert.isFalse(input.invalid, 'input is valid');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, 'foo123');
+        ironInput.validate();
+        assert.isFalse(ironInput.invalid, 'input is valid');
+      });
+
+      test('validator used instead of constraints api if provided', function() {
+        var ironInput = fixture('has-validator')[1];
+        var input = ironInput.querySelector('input');
+        input.value = '123';
+        ironInput._onInput();
+        ironInput.validate();
+        assert.isTrue(ironInput.invalid, 'input is invalid');
+      });
+
+      test('browser validation beats custom validation', function() {
+        var ironInput = fixture('native-and-custom-validator')[1];
+        var input = ironInput.querySelector('input');
+
+        // The input allows any letters, but the browser only allows one
+        // of [abc].
+        input.value = 'aaaa';
+        ironInput._onInput();
+        ironInput.validate();
+        assert.isFalse(ironInput.invalid, 'input is valid');
+
+        // The validator allows this, but the browser doesn't.
+        input.value = 'zzz';
+        ironInput._onInput();
+        ironInput.validate();
+        assert.isTrue(ironInput.invalid, 'input is invalid');
       });
 
       test('prevent invalid input works automatically when allowed pattern is set', function() {
-        var input = fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+        var ironInput = fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+        var input = ironInput.querySelector('input');
+
         input.value = '123';
-        input._onInput();
-        assert.equal(input.bindValue, '123');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '123');
 
         input.value = '123foo';
-        input._onInput();
-        assert.equal(input.bindValue, '123');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '123');
 
-        input.allowedPattern = '';
+        ironInput.allowedPattern = '';
         input.value = '#123foo BAR!';
-        input._onInput();
-        assert.equal(input.bindValue, '#123foo BAR!');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, '#123foo BAR!');
 
-        input.allowedPattern = '[a-zA-Z]';
+        ironInput.allowedPattern = '[a-zA-Z]';
         input.value = 'foo';
-        input._onInput();
+        ironInput._onInput();
         input.value = 'bar123';
-        input._onInput();
-        assert.equal(input.bindValue, 'foo');
+        ironInput._onInput();
+        assert.equal(ironInput.bindValue, 'foo');
       });
 
       test('disabled input doesn\'t throw on Firefox', function() {
         var el = fixture('disabled-input');
-        var input = el.$.input;
+        var ironInput = el.$.input;
+        var input = ironInput.querySelector('input');
 
-        assert.equal(input.bindValue, 'foo');
+        assert.equal(ironInput.bindValue, 'foo');
 
         assert.isFalse(el.myInvalid);
         assert.isTrue(input.disabled);
-      });
-
-      test('browser validation beats custom validation', function() {
-        var input = fixture('native-and-custom-validator')[1];
-        // The input allows any letters, but the browser only allows one
-        // of [abc].
-        input.value = 'aaaa';
-        input.validate();
-        assert.isFalse(input.invalid, 'input is valid');
-
-        // The validator allows this, but the browser doesn't.
-        input.value = 'zzz';
-        input.validate();
-        assert.isTrue(input.invalid, 'input is invalid');
       });
     });
 
     suite('a11y', function() {
       test('announces invalid characters when _onInput is called', function() {
-        var input = fixture('prevent-invalid-input');
-        input.addEventListener('iron-announce', function(event) {
+        var ironInput = fixture('prevent-invalid-input');
+        var input = ironInput.querySelector('input');
+
+        ironInput.addEventListener('iron-announce', function(event) {
           assert.equal(event.detail.text, 'Invalid string of characters not entered.');
         });
         input.value = 'foo';
-        input._onInput();
+        ironInput._onInput();
       });
 
       test('announces invalid characters on keypress', function() {
-        var input = fixture('prevent-invalid-input');
-        input.addEventListener('iron-announce', function(event) {
+        var ironInput = fixture('prevent-invalid-input');
+        var input = ironInput.querySelector('input');
+
+        ironInput.addEventListener('iron-announce', function(event) {
           assert.equal(event.detail.text, 'Invalid character a not entered.');
         });
 
