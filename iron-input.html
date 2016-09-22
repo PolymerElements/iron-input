@@ -68,6 +68,12 @@ called. You can use it to implement a custom validator:
       CatsOnly.validate(input2);
     });
 
+You can also use an element implementing an `IronValidatorBehavior`:
+
+    <iron-input validator="cats-only">
+      <input>
+    </iron-input>
+
 ### Preventing invalid input
 
 It may be desirable to only allow users to enter certain characters. You can use the
@@ -175,7 +181,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       _initSlottedInput: function() {
-        this._inputElement = this.querySelector('input');
+        this._inputElement = this.getEffectiveChildren()[0];
         if (this._inputElement && this._inputElement.value) {
           this.bindValue = this._inputElement.value;
         }
