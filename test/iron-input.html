@@ -40,14 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <test-fixture id="has-value">
-    <template>
-      <iron-input>
-        <input value="foobar">
-      </iron-input>
-    </template>
-  </test-fixture>
-
   <test-fixture id="has-bind-value">
     <template>
       <iron-input bind-value="foobar">
@@ -174,12 +166,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         input.value = 'foo';
         ironInput._onInput();
-      });
-
-      test('default value sets bindValue', function() {
-        var ironInput = fixture('has-value');
-        var input = ironInput.querySelector('input');
-        assert.equal(ironInput.bindValue, input.value, 'input value equals to iron-input bindValue');
       });
 
       test('default bindValue sets value', function() {
