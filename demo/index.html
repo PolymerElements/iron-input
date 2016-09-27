@@ -20,8 +20,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../iron-input.html">
+
+  <!-- Order of imports matters. The validator needs to be imported before the
+    iron-input needs it. -->
   <link rel="import" href="cats-only.html">
+  <link rel="import" href="../iron-input.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles"></style>
