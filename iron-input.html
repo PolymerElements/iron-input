@@ -120,8 +120,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
          * input's `value` property to set a default value.
          */
         bindValue: {
-          type: String,
-          notify: true,
+          type: String
+        },
+
+        value: {
+          computed: '_computeValue(bindValue)'
         },
 
         /**
@@ -197,6 +200,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         if (this._inputElement && this._inputElement.value) {
           this.bindValue = this._inputElement.value;
         }
+
+        this.fire('iron-input-ready');
       },
 
       _canDispatchEventOnDisabled: function() {
@@ -266,10 +271,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           this.validate();
         }
 
-        // This was code from 1.0. It's not clear this is needed if the element
-        // is a wrapper.
         // manually notify because we don't want to notify until after setting value
-        //this.fire('bind-value-changed', {value: bindValue});
+        this.fire('bind-value-changed', {value: bindValue});
       },
 
       _onInput: function() {
@@ -361,6 +364,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        * @return {boolean} True if the value is valid.
        */
       validate: function() {
+        if (!this._inputElement) {
+          this.invalid = false;
+          return true;
+        }
+
         // Use the nested input's native validity.
         var valid =  this._inputElement.checkValidity();
 
@@ -381,6 +389,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       _announceInvalidCharacter: function(message) {
         this.fire('iron-announce', { text: message });
+      },
+
+      _computeValue: function(bindValue) {
+        return bindValue;
       }
     });
   </script>
