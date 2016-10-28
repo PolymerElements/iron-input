@@ -159,13 +159,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var ironInput = fixture('basic');
         var input = ironInput.querySelector('input');
 
-        ironInput.addEventListener('bind-value-changed', function(value) {
-          assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
-          done();
-        });
+        // avoid `bind-value-changed` that's fired on initialization
+        Polymer.Base.async(function() {
+          ironInput.addEventListener('bind-value-changed', function(value) {
+            assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
+            done();
+          });
 
-        input.value = 'foo';
-        ironInput._onInput();
+          input.value = 'foo';
+          ironInput._onInput();
+        }, 1);
       });
 
       test('default bindValue sets value', function() {
