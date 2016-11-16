@@ -181,8 +181,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       attached: function() {
-        this._initSlottedInput();
-
         // If the input is added at a later time, update the internal reference.
         this._observer = Polymer.dom(this).observeNodes(function(info) {
           this._initSlottedInput();
