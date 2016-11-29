@@ -161,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ironInput.bindValue = 'foobar';
           assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
           done();
-        });
+        }, 1);
       });
 
       test('changing the input triggers an event', function(done) {
@@ -177,7 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var input = ironInput.querySelector('input');
           input.value = 'foo';
           fireNativeInputEvent(input);
-        });
+        }, 1);
       });
 
       test('default bindValue sets value', function(done) {
@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var input = ironInput.querySelector('input');
           assert.equal(ironInput.bindValue, input.value, 'input value equals to iron-input bindValue');
           done();
-        });
+        }, 1);
       });
 
       test('set bindValue to undefined', function() {
@@ -223,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           fireNativeInputEvent(input);
           assert.equal(ironInput.bindValue, '123');
           done();
-        });
+        }, 1);
       });
 
       test('inputs can be validated', function(done) {
@@ -251,7 +251,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ironInput.validate();
           assert.isFalse(ironInput.invalid, 'input is valid');
           done();
-        });
+        }, 1);
       });
 
       test('validator used instead of constraints api if provided', function(done) {
@@ -265,7 +265,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ironInput.validate();
           assert.isTrue(ironInput.invalid, 'input is invalid');
           done();
-        });
+        }, 1);
       });
 
       test('browser validation beats custom validation', function(done) {
@@ -288,7 +288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ironInput.validate();
           assert.isTrue(ironInput.invalid, 'input is invalid');
           done();
-        });
+        }, 1);
       });
 
       test('prevent invalid input works automatically when allowed pattern is set', function(done) {
@@ -318,7 +318,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           fireNativeInputEvent(input);
           assert.equal(ironInput.bindValue, 'foo');
           done();
-        });
+        }, 1);
       });
 
       test('disabled input doesn\'t throw on Firefox', function() {
@@ -347,7 +347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           input.value = 'foo';
           fireNativeInputEvent(input);
           done();
-        });
+        }, 1);
       });
 
       test('announces invalid characters on keypress', function() {
