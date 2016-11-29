@@ -130,14 +130,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('can initialize programmatically', function(done) {
         var ironInput = fixture('programmatic');
         assert.isNull(ironInput.querySelector('input'));
-
-        ironInput.appendChild(document.createElement('input'));
-        var input = ironInput.querySelector('input');
-        assert.ok(input);
+        Polymer.dom(ironInput).appendChild(document.createElement('input'));
 
         // Mutation observer is async, so wait one tick.
         Polymer.Base.async(function() {
-          assert.ok(ironInput._inputElement);
+          var input = ironInput.querySelector('input');
+          assert.ok(input);
+          assert.ok(ironInput.inputElement);
 
           // Updating bind-value updates the input's value.
           ironInput.bindValue = 'foobar';
@@ -147,9 +146,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           input.value = 'foo';
           fireNativeInputEvent(input);
           assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
-
           done();
         }, 1);
+
       });
 
       test('setting bindValue sets value', function(done) {
@@ -167,14 +166,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('changing the input triggers an event', function(done) {
         var ironInput = fixture('basic');
 
-        ironInput.addEventListener('bind-value-changed', function(value) {
-          assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
-          done();
-        });
-
         // Mutation observer is async, so wait one tick.
         Polymer.Base.async(function() {
           var input = ironInput.querySelector('input');
+
+          ironInput.addEventListener('bind-value-changed', function(value) {
+            assert.equal(input.value, ironInput.bindValue, 'input value equals to iron-input bindValue');
+            done();
+          });
+
           input.value = 'foo';
           fireNativeInputEvent(input);
         }, 1);
