@@ -68,7 +68,8 @@ called. You can use it to implement a custom validator:
       CatsOnly.validate(input2);
     });
 
-You can also use an element implementing an `IronValidatorBehavior`:
+You can also use an element implementing an [`IronValidatorBehavior`](/element/PolymerElements/iron-validatable-behavior).
+This example can also be found in the demo for this element:
 
     <iron-input validator="cats-only">
       <input>
@@ -140,8 +141,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
          * doesn't match `allowedPattern`, the entire pasted string will be rejected.
          *
          * Note: if you were using `iron-input` in 1.0, you were also required to
-         * set `prevent-invalid-input`. This is no longer needed, and will be set
-         * automatically for you if an `allowedPattern` is provided.
+         * set `prevent-invalid-input`. This is no longer needed as of Polymer 2.0,
+         * and will be set automatically for you if an `allowedPattern` is provided.
          *
          */
         allowedPattern: {
@@ -192,11 +193,18 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         this._observer = null;
       },
 
+      /**
+       * Returns the distributed <input> element.
+       */
+      get inputElement () {
+        return this._inputElement;
+      },
+
       _initSlottedInput: function() {
         this._inputElement = this.getEffectiveChildren()[0];
 
-        if (this._inputElement && this._inputElement.value) {
-          this.bindValue = this._inputElement.value;
+        if (this.inputElement && this.inputElement.value) {
+          this.bindValue = this.inputElement.value;
         }
 
         this.fire('iron-input-ready');
@@ -256,8 +264,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       _bindValueChanged: function(bindValue, inputElement) {
         // The observer could have run before attached() when we have actually initialized
         // this property.
-        if (!inputElement)
+        if (!inputElement) {
           return;
+        }
 
         if (bindValue === undefined) {
           inputElement.value = null;
@@ -280,11 +289,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           var valid = this._checkPatternValidity();
           if (!valid) {
             this._announceInvalidCharacter('Invalid string of characters not entered.');
-            this._inputElement.value = this._previousValidInput;
+            this.inputElement.value = this._previousValidInput;
           }
         }
 
-        this.bindValue = this._previousValidInput = this._inputElement.value;
+        this.bindValue = this._previousValidInput = this.inputElement.value;
         this._patternAlreadyChecked = false;
       },
 
@@ -348,8 +357,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         if (!regexp) {
           return true;
         }
-        for (var i = 0; i < this._inputElement.value.length; i++) {
-          if (!regexp.test(this._inputElement.value[i])) {
+        for (var i = 0; i < this.inputElement.value.length; i++) {
+          if (!regexp.test(this.inputElement.value[i])) {
             return false;
           }
         }
@@ -362,13 +371,13 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        * @return {boolean} True if the value is valid.
        */
       validate: function() {
-        if (!this._inputElement) {
+        if (!this.inputElement) {
           this.invalid = false;
           return true;
         }
 
         // Use the nested input's native validity.
-        var valid =  this._inputElement.checkValidity();
+        var valid =  this.inputElement.checkValidity();
 
         // Only do extra checking if the browser thought this was valid.
         if (valid) {
