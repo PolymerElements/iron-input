@@ -107,7 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <dom-bind id="bind-to-object">
-    <template is="dom-bind">
+    <template is="dom-bind" id="bind-to-object-template">
       <iron-input id="input" bind-value="{{foo}}">
         <input>
       </iron-input>
@@ -192,7 +192,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('set bindValue to undefined', function() {
-        var scope = document.getElementById('bind-to-object');
+        var domBind = document.getElementById('bind-to-object');
+        var templ = document.getElementById('bind-to-object-template');
+
+        // The data lives in a different place in Polymer 1.0 vs 2.0.
+        var scope = domBind.$ ? domBind : templ;
         scope.foo = undefined;
         var ironInput = scope.$.input;
         var input = ironInput.querySelector('input');
@@ -201,7 +205,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('set bindValue to false', function() {
-        var scope = document.getElementById('bind-to-object');
+        var domBind = document.getElementById('bind-to-object');
+        var templ = document.getElementById('bind-to-object-template');
+
+        // The data lives in a different place in Polymer 1.0 vs 2.0.
+        var scope = domBind.$ ? domBind : templ;
         scope.foo = false;
         var ironInput = scope.$.input;
         var input = ironInput.querySelector('input');
