@@ -271,7 +271,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         if (bindValue === undefined) {
           inputElement.value = null;
         } else {
-          inputElement.value = bindValue;
+          this._updateValueAndPreserveCaret(bindValue);
         }
 
         if (this.autoValidate) {
@@ -289,7 +289,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           var valid = this._checkPatternValidity();
           if (!valid) {
             this._announceInvalidCharacter('Invalid string of characters not entered.');
-            this.inputElement.value = this._previousValidInput;
+            this._updateValueAndPreserveCaret(this._previousValidInput);
           }
         }
 
@@ -400,7 +400,29 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       _computeValue: function(bindValue) {
         return bindValue;
-      }
+      },
+
+      /**
+       * Restores the cursor to its original position after updating the value.
+       * @param {string} newValue The value that should be saved.
+       */
+      _updateValueAndPreserveCaret: function(newValue) {
+        // Not all elements might have selection, and even if they have the
+        // right properties, accessing them might throw an exception (like for
+        // <input type=number>)
+        try {
+          var start = this.inputElement.selectionStart;
+          this.value = newValue;
+
+          // The cursor automatically jumps to the end after re-setting the value,
+          // so restore it to its original position.
+          this.inputElement.selectionStart = start;
+          this.inputElement.selectionEnd = start;
+        } catch (e) {
+          // Just set the value and give up on the caret.
+          this.value = newValue;
+        }
+      },
     });
   </script>
 </dom-module>
