@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </dom-bind>
 
-  <test-fixture id="disabled-input">
+  <test-fixture id="disabled">
     <template>
       <disabled-input></disabled-input>
     </template>
@@ -330,7 +330,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('disabled input doesn\'t throw on Firefox', function() {
-        var el = fixture('disabled-input');
+        var el = fixture('disabled');
         var ironInput = el.$.input;
         var input = ironInput.querySelector('input');
 
