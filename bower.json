@@ -22,7 +22,7 @@
   "dependencies": {
     "iron-a11y-announcer": "PolymerElements/iron-a11y-announcer#2.0-preview",
     "iron-validatable-behavior": "PolymerElements/iron-validatable-behavior#2.0-preview",
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0-rc.1"
   },
   "devDependencies": {
     "iron-demo-helpers": "polymerelements/iron-demo-helpers#2.0-preview",
