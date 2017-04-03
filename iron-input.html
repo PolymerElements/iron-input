@@ -186,8 +186,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       detached: function() {
-        Polymer.dom(this).unobserveNodes(this._observer);
-        this._observer = null;
+        if (this._observer) {
+          Polymer.dom(this).unobserveNodes(this._observer);
+          this._observer = null;
+        }
       },
 
       /**
