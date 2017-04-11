@@ -232,11 +232,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         if (!inputElement) {
           return;
         }
-        
+
         if (bindValue === undefined) {
           inputElement.value = null;
-        } else {
-          this.value = bindValue;
+        } else if (bindValue !== inputElement.value){
+          this.inputElement.value = bindValue;
         }
 
         if (this.autoValidate) {
