@@ -91,6 +91,14 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         observer: "_allowedPatternChanged"
       },
 
+      /**
+       * Delay the updating of the bound value whilst the user is entering data. This property will accept a number as
+       * its input, which should be the number of milliseconds from which the users input should be debounced.
+       */
+      debounceUpdate: {
+        type: Number
+      },
+
       _previousValidInput: {
         type: String,
         value: ''
@@ -199,6 +207,15 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         }
       }
 
+      // If a `debounceUpdate` value has been supplied, delay the updating of the `bindValue` property
+      if (this.debounceUpdate) {
+        this.debounce('debouncedUpdateValue', this._updateValue.bind(this), this.debounceUpdate);
+      } else {
+        this._updateValue();
+      }
+    },
+
+    _updateValue: function() {
       this.bindValue = this.value;
       this._previousValidInput = this.value;
       this._patternAlreadyChecked = false;
