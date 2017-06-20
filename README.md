@@ -50,7 +50,7 @@ for two-way data binding. `bind-value` will notify if it is changed either by us
 
 ```html
 <iron-input bind-value="{{bindValue}}">
-  <input value="{{value::input}}"></iron-input>
+  <input value="{{value::input}}"></input>
 </iron-input>
 ```
 
@@ -61,7 +61,7 @@ You can use custom validators that implement `Polymer.IronValidatorBehavior` wit
 ```html
 <iron-input auto-validate validator="my-custom-validator">
   <input placeholder="only 'cat' is valid">
- </iron-input>
+</iron-input>
 ```
 
 ### Stopping invalid input
