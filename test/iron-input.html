@@ -88,6 +88,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="basic-validation-with-element">
+    <template>
+      <iron-input>
+        <div></div>
+        <input pattern="[a-zA-Z]{3}[0-9]*">
+      </iron-input>
+    </template>
+  </test-fixture>
+
   <test-fixture id="has-validator">
     <template>
       <letters-only></letters-only>
@@ -236,6 +245,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('inputs can be validated', function(done) {
         var ironInput = fixture('basic-validation');
+
+        // Mutation observer is async, so wait one tick.
+        Polymer.Base.async(function() {
+          var input = ironInput.querySelector('input');
+
+          input.value = '123';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, '123');
+          ironInput.validate();
+          assert.isTrue(ironInput.invalid, 'input is invalid');
+
+          input.value = 'foo';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, 'foo');
+          ironInput.validate();
+          assert.isFalse(ironInput.invalid, 'input is valid');
+
+          input.value = 'foo123';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, 'foo123');
+          ironInput.validate();
+          assert.isFalse(ironInput.invalid, 'input is valid');
+          done();
+        }, 1);
+      });
+
+      test('inputs with other elements can be validated', function(done) {
+        var ironInput = fixture('basic-validation-with-element');
 
         // Mutation observer is async, so wait one tick.
         Polymer.Base.async(function() {
