@@ -1,0 +1,27 @@
+{
+  "name": "@polymer/iron-input",
+  "flat": true,
+  "version": "3.0.0-pre.1",
+  "description": "An input element with data binding",
+  "contributors": [
+    "The Polymer Authors"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "input"
+  ],
+  "main": "iron-input.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-input.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/PolymerElements/iron-input",
+  "dependencies": {
+    "@polymer/iron-a11y-announcer": "^3.0.0-pre.1",
+    "@polymer/iron-validatable-behavior": "^3.0.0-pre.1",
+    "@polymer/polymer": "^3.0.0-pre.1"
+  },
+  "devDependencies": {}
+}
