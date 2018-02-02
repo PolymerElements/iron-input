@@ -1,0 +1,10 @@
+{
+  "name": "@polymer/iron-input",
+  "private": true,
+  "description": "An input element with data binding",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-input.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt"
+}
