@@ -132,9 +132,10 @@ interface IronInputElement extends Polymer.Element, Polymer.IronValidatableBehav
 
   /**
    * Returns the distributed <input> element.
+   *        
    */
-  inputElement: object|null;
-  _patternRegExp: object|null;
+  readonly inputElement: any;
+  readonly _patternRegExp: any;
 
   /**
    * Returns true if `value` is valid. The validator provided in `validator` will be used first,
@@ -143,16 +144,16 @@ interface IronInputElement extends Polymer.Element, Polymer.IronValidatableBehav
    * @returns True if the value is valid.
    */
   validate(): boolean;
-  created(): any;
-  attached(): any;
-  detached(): any;
-  _initSlottedInput(): any;
-  _bindValueChanged(bindValue: any, inputElement: any): any;
-  _onInput(): any;
+  created(): void;
+  attached(): void;
+  detached(): void;
+  _initSlottedInput(): void;
+  _bindValueChanged(bindValue: any, inputElement: any): void;
+  _onInput(): void;
   _isPrintable(event: any): any;
-  _onKeypress(event: any): any;
+  _onKeypress(event: any): void;
   _checkPatternValidity(): any;
-  _announceInvalidCharacter(message: any): any;
+  _announceInvalidCharacter(message: any): void;
   _computeValue(bindValue: any): any;
 }
 
