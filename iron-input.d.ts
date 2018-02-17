@@ -131,7 +131,7 @@ interface IronInputElement extends Polymer.Element, Polymer.IronValidatableBehav
   _inputElement: object|null|undefined;
 
   /**
-   * Returns the distributed <input> element.
+   * Returns the distributed input element.
    *        
    */
   readonly inputElement: any;
