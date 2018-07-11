@@ -16,14 +16,9 @@ Polymer({
   _template: html`
     <iron-input bind-value="{{myValue}}" invalid="{{myInvalid}}" id="input">
       <input disabled="">
-    </iron-input>
-`,
+    </iron-input>`,
 
   is: 'disabled-input',
 
-  properties: {
-    myValue: {value: 'foo'},
-
-    myInvalid: {value: false}
-  }
+  properties: {myValue: {value: 'foo'}, myInvalid: {value: false}}
 });

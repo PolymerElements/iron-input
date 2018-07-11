@@ -13,7 +13,6 @@ import '@polymer/polymer/polymer-legacy.js';
 import {IronValidatorBehavior} from '@polymer/iron-validator-behavior/iron-validator-behavior.js';
 import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
 Polymer({
-
   is: 'letters-only',
 
   behaviors: [IronValidatorBehavior],
@@ -21,5 +20,4 @@ Polymer({
   validate: function(value) {
     return !value || value.match(/^[a-zA-Z]*$/) !== null;
   }
-
 });
