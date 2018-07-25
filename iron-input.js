@@ -96,7 +96,6 @@ validated.
       <input pattern="\d{5}">
     </iron-input>
 
-@hero hero.svg
 @demo demo/index.html
 */
 Polymer({
