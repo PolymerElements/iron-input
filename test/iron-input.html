@@ -17,12 +17,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script src="../../../wct-browser-legacy/browser.js"></script>
-  <script type="module" src="../iron-input.js"></script>
-  <script type="module" src="./letters-only.js"></script>
-  <script type="module" src="./disabled-input.js"></script>
-
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 </head>
 <body>
 
@@ -121,209 +117,141 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script type="module">
-import '../iron-input.js';
-import './letters-only.js';
-import './disabled-input.js';
-import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-import { Base } from '@polymer/polymer/polymer-legacy.js';
-function fireNativeInputEvent(input) {
-  var ev =
-      new Event('input', {bubbles: true, cancelable: true, composed: true});
-  input.dispatchEvent(ev);
-}
+    import '../iron-input.js';
+    import './letters-only.js';
+    import './disabled-input.js';
+    import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+    import {Base} from '@polymer/polymer/polymer-legacy.js';
+    function fireNativeInputEvent(input) {
+      var ev =
+          new Event('input', {bubbles: true, cancelable: true, composed: true});
+      input.dispatchEvent(ev);
+    }
 
-suite('basic', function() {
-  test('can initialize programmatically', function(done) {
-    var ironInput = fixture('programmatic');
-    assert.isNull(ironInput.querySelector('input'));
-    dom(ironInput).appendChild(document.createElement('input'));
+    suite('basic', function() {
+      test('can initialize programmatically', function(done) {
+        var ironInput = fixture('programmatic');
+        assert.isNull(ironInput.querySelector('input'));
+        dom(ironInput).appendChild(document.createElement('input'));
 
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-      assert.ok(input);
-      assert.ok(ironInput.inputElement);
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+          assert.ok(input);
+          assert.ok(ironInput.inputElement);
 
-      // Updating bind-value updates the input's value.
-      ironInput.bindValue = 'foobar';
-      assert.equal(
-          input.value,
-          ironInput.bindValue,
-          'input value equals to iron-input bindValue');
+          // Updating bind-value updates the input's value.
+          ironInput.bindValue = 'foobar';
+          assert.equal(
+              input.value,
+              ironInput.bindValue,
+              'input value equals to iron-input bindValue');
 
-      // Updating the input's value updates bind-value;
-      input.value = 'foo';
-      fireNativeInputEvent(input);
-      assert.equal(
-          input.value,
-          ironInput.bindValue,
-          'input value equals to iron-input bindValue');
-      done();
-    }, 1);
-  });
-
-  test('setting bindValue sets value', function(done) {
-    var ironInput = fixture('basic');
-
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-      ironInput.bindValue = 'foobar';
-      assert.equal(
-          input.value,
-          ironInput.bindValue,
-          'input value equals to iron-input bindValue');
-      done();
-    }, 1);
-  });
-
-  test('changing the input triggers an event', function(done) {
-    var ironInput = fixture('basic');
-
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-
-      ironInput.addEventListener('bind-value-changed', function(value) {
-        assert.equal(
-            input.value,
-            ironInput.bindValue,
-            'input value equals to iron-input bindValue');
-        done();
+          // Updating the input's value updates bind-value;
+          input.value = 'foo';
+          fireNativeInputEvent(input);
+          assert.equal(
+              input.value,
+              ironInput.bindValue,
+              'input value equals to iron-input bindValue');
+          done();
+        }, 1);
       });
 
-      input.value = 'foo';
-      fireNativeInputEvent(input);
-    }, 1);
-  });
+      test('setting bindValue sets value', function(done) {
+        var ironInput = fixture('basic');
 
-  test('default bindValue sets value', function(done) {
-    var ironInput = fixture('has-bind-value');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+          ironInput.bindValue = 'foobar';
+          assert.equal(
+              input.value,
+              ironInput.bindValue,
+              'input value equals to iron-input bindValue');
+          done();
+        }, 1);
+      });
 
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-      assert.equal(
-          ironInput.bindValue,
-          input.value,
-          'input value equals to iron-input bindValue');
-      done();
-    }, 1);
-  });
+      test('changing the input triggers an event', function(done) {
+        var ironInput = fixture('basic');
 
-  test('set bindValue to undefined', function() {
-    var domBind = document.getElementById('bind-to-object');
-    var templ = document.getElementById('bind-to-object-template');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
 
-    // The data lives in a different place in Polymer 1.0 vs 2.0.
-    var scope = domBind.$ ? domBind : templ;
-    scope.foo = undefined;
-    var ironInput = scope.$.input;
-    var input = ironInput.querySelector('input');
-    assert.ok(!ironInput.bindValue, 'ironInput bindValue is falsy');
-    assert.ok(!input.value, 'input value is falsy');
-  });
+          ironInput.addEventListener('bind-value-changed', function(value) {
+            assert.equal(
+                input.value,
+                ironInput.bindValue,
+                'input value equals to iron-input bindValue');
+            done();
+          });
 
-  test('set bindValue to false', function() {
-    var domBind = document.getElementById('bind-to-object');
-    var templ = document.getElementById('bind-to-object-template');
+          input.value = 'foo';
+          fireNativeInputEvent(input);
+        }, 1);
+      });
 
-    // The data lives in a different place in Polymer 1.0 vs 2.0.
-    var scope = domBind.$ ? domBind : templ;
-    scope.foo = false;
-    var ironInput = scope.$.input;
-    var input = ironInput.querySelector('input');
-    assert.isFalse(ironInput.bindValue);
-    assert.equal(input.value, 'false');
-  });
+      test('default bindValue sets value', function(done) {
+        var ironInput = fixture('has-bind-value');
 
-  test('prevent invalid input works after an input event', function(done) {
-    var ironInput = fixture('prevent-invalid-input');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+          assert.equal(
+              ironInput.bindValue,
+              input.value,
+              'input value equals to iron-input bindValue');
+          done();
+        }, 1);
+      });
 
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-      input.value = '123';
-      fireNativeInputEvent(input);
-      assert.equal(ironInput.bindValue, '123');
+      test('set bindValue to undefined', function() {
+        var domBind = document.getElementById('bind-to-object');
+        var templ = document.getElementById('bind-to-object-template');
 
-      input.value = '123foo';
-      fireNativeInputEvent(input);
-      assert.equal(ironInput.bindValue, '123');
-      done();
-    }, 1);
-  });
+        // The data lives in a different place in Polymer 1.0 vs 2.0.
+        var scope = domBind.$ ? domBind : templ;
+        scope.foo = undefined;
+        var ironInput = scope.$.input;
+        var input = ironInput.querySelector('input');
+        assert.ok(!ironInput.bindValue, 'ironInput bindValue is falsy');
+        assert.ok(!input.value, 'input value is falsy');
+      });
 
-  test('inputs can be validated', function(done) {
-    var ironInput = fixture('basic-validation');
+      test('set bindValue to false', function() {
+        var domBind = document.getElementById('bind-to-object');
+        var templ = document.getElementById('bind-to-object-template');
 
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
+        // The data lives in a different place in Polymer 1.0 vs 2.0.
+        var scope = domBind.$ ? domBind : templ;
+        scope.foo = false;
+        var ironInput = scope.$.input;
+        var input = ironInput.querySelector('input');
+        assert.isFalse(ironInput.bindValue);
+        assert.equal(input.value, 'false');
+      });
 
-      input.value = '123';
-      fireNativeInputEvent(input);
-      assert.equal(ironInput.bindValue, '123');
-      ironInput.validate();
-      assert.isTrue(ironInput.invalid, 'input is invalid');
+      test('prevent invalid input works after an input event', function(done) {
+        var ironInput = fixture('prevent-invalid-input');
 
-      input.value = 'foo';
-      fireNativeInputEvent(input);
-      assert.equal(ironInput.bindValue, 'foo');
-      ironInput.validate();
-      assert.isFalse(ironInput.invalid, 'input is valid');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+          input.value = '123';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, '123');
 
-      input.value = 'foo123';
-      fireNativeInputEvent(input);
-      assert.equal(ironInput.bindValue, 'foo123');
-      ironInput.validate();
-      assert.isFalse(ironInput.invalid, 'input is valid');
-      done();
-    }, 1);
-  });
+          input.value = '123foo';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, '123');
+          done();
+        }, 1);
+      });
 
-  test('validator used instead of constraints api if provided', function(done) {
-    var ironInput = fixture('has-validator')[1];
-
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-      input.value = '123';
-      fireNativeInputEvent(input);
-      ironInput.validate();
-      assert.isTrue(ironInput.invalid, 'input is invalid');
-      done();
-    }, 1);
-  });
-
-  test('browser validation beats custom validation', function(done) {
-    var ironInput = fixture('native-and-custom-validator')[1];
-
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-
-      // The input allows any letters, but the browser only allows one
-      // of [abc].
-      input.value = 'aaaa';
-      fireNativeInputEvent(input);
-      ironInput.validate();
-      assert.isFalse(ironInput.invalid, 'input is valid');
-
-      // The validator allows this, but the browser doesn't.
-      input.value = 'zzz';
-      fireNativeInputEvent(input);
-      ironInput.validate();
-      assert.isTrue(ironInput.invalid, 'input is invalid');
-      done();
-    }, 1);
-  });
-
-  test(
-      'prevent invalid input works automatically when allowed pattern is set',
-      function(done) {
-        var ironInput =
-            fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+      test('inputs can be validated', function(done) {
+        var ironInput = fixture('basic-validation');
 
         // Mutation observer is async, so wait one tick.
         Base.async(function() {
@@ -332,71 +260,139 @@ suite('basic', function() {
           input.value = '123';
           fireNativeInputEvent(input);
           assert.equal(ironInput.bindValue, '123');
+          ironInput.validate();
+          assert.isTrue(ironInput.invalid, 'input is invalid');
 
-          input.value = '123foo';
-          fireNativeInputEvent(input);
-          assert.equal(ironInput.bindValue, '123');
-
-          ironInput.allowedPattern = '';
-          input.value = '#123foo BAR!';
-          fireNativeInputEvent(input);
-          assert.equal(ironInput.bindValue, '#123foo BAR!');
-
-          ironInput.allowedPattern = '[a-zA-Z]';
           input.value = 'foo';
           fireNativeInputEvent(input);
-          input.value = 'bar123';
-          fireNativeInputEvent(input);
           assert.equal(ironInput.bindValue, 'foo');
+          ironInput.validate();
+          assert.isFalse(ironInput.invalid, 'input is valid');
+
+          input.value = 'foo123';
+          fireNativeInputEvent(input);
+          assert.equal(ironInput.bindValue, 'foo123');
+          ironInput.validate();
+          assert.isFalse(ironInput.invalid, 'input is valid');
           done();
         }, 1);
       });
 
-  test('disabled input doesn\'t throw on Firefox', function() {
-    var el = fixture('disabled');
-    var ironInput = el.$.input;
-    var input = ironInput.querySelector('input');
+      test('validator used instead of constraints api if provided', function(done) {
+        var ironInput = fixture('has-validator')[1];
 
-    assert.equal(ironInput.bindValue, 'foo');
-
-    assert.isFalse(el.myInvalid);
-    assert.isTrue(input.disabled);
-  });
-});
-
-suite('a11y', function() {
-  test('announces invalid characters after an input event', function(done) {
-    var ironInput = fixture('prevent-invalid-input');
-
-    // Mutation observer is async, so wait one tick.
-    Base.async(function() {
-      var input = ironInput.querySelector('input');
-
-      ironInput.addEventListener('iron-announce', function(event) {
-        assert.equal(
-            event.detail.text, 'Invalid string of characters not entered.');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+          input.value = '123';
+          fireNativeInputEvent(input);
+          ironInput.validate();
+          assert.isTrue(ironInput.invalid, 'input is invalid');
+          done();
+        }, 1);
       });
-      input.value = 'foo';
-      fireNativeInputEvent(input);
-      done();
-    }, 1);
-  });
 
-  test('announces invalid characters on keypress', function() {
-    var ironInput = fixture('prevent-invalid-input');
-    var input = ironInput.querySelector('input');
+      test('browser validation beats custom validation', function(done) {
+        var ironInput = fixture('native-and-custom-validator')[1];
 
-    ironInput.addEventListener('iron-announce', function(event) {
-      assert.equal(event.detail.text, 'Invalid character a not entered.');
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+
+          // The input allows any letters, but the browser only allows one
+          // of [abc].
+          input.value = 'aaaa';
+          fireNativeInputEvent(input);
+          ironInput.validate();
+          assert.isFalse(ironInput.invalid, 'input is valid');
+
+          // The validator allows this, but the browser doesn't.
+          input.value = 'zzz';
+          fireNativeInputEvent(input);
+          ironInput.validate();
+          assert.isTrue(ironInput.invalid, 'input is invalid');
+          done();
+        }, 1);
+      });
+
+      test(
+          'prevent invalid input works automatically when allowed pattern is set',
+          function(done) {
+            var ironInput =
+                fixture('automatically-prevent-invalid-input-if-allowed-pattern');
+
+            // Mutation observer is async, so wait one tick.
+            Base.async(function() {
+              var input = ironInput.querySelector('input');
+
+              input.value = '123';
+              fireNativeInputEvent(input);
+              assert.equal(ironInput.bindValue, '123');
+
+              input.value = '123foo';
+              fireNativeInputEvent(input);
+              assert.equal(ironInput.bindValue, '123');
+
+              ironInput.allowedPattern = '';
+              input.value = '#123foo BAR!';
+              fireNativeInputEvent(input);
+              assert.equal(ironInput.bindValue, '#123foo BAR!');
+
+              ironInput.allowedPattern = '[a-zA-Z]';
+              input.value = 'foo';
+              fireNativeInputEvent(input);
+              input.value = 'bar123';
+              fireNativeInputEvent(input);
+              assert.equal(ironInput.bindValue, 'foo');
+              done();
+            }, 1);
+          });
+
+      test('disabled input doesn\'t throw on Firefox', function() {
+        var el = fixture('disabled');
+        var ironInput = el.$.input;
+        var input = ironInput.querySelector('input');
+
+        assert.equal(ironInput.bindValue, 'foo');
+
+        assert.isFalse(el.myInvalid);
+        assert.isTrue(input.disabled);
+      });
     });
 
-    // Simulate key press event.
-    var event = new CustomEvent('keypress', {bubbles: true, cancelable: true});
-    event.charCode = 97 /* a */;
-    input.dispatchEvent(event);
-  });
-});
-</script>
+    suite('a11y', function() {
+      test('announces invalid characters after an input event', function(done) {
+        var ironInput = fixture('prevent-invalid-input');
+
+        // Mutation observer is async, so wait one tick.
+        Base.async(function() {
+          var input = ironInput.querySelector('input');
+
+          ironInput.addEventListener('iron-announce', function(event) {
+            assert.equal(
+                event.detail.text, 'Invalid string of characters not entered.');
+          });
+          input.value = 'foo';
+          fireNativeInputEvent(input);
+          done();
+        }, 1);
+      });
+
+      test('announces invalid characters on keypress', function() {
+        var ironInput = fixture('prevent-invalid-input');
+        var input = ironInput.querySelector('input');
+
+        ironInput.addEventListener('iron-announce', function(event) {
+          assert.equal(event.detail.text, 'Invalid character a not entered.');
+        });
+
+        // Simulate key press event.
+        var event = new CustomEvent('keypress', {bubbles: true, cancelable: true});
+        event.charCode = 97 /* a */;
+        input.dispatchEvent(event);
+      });
+    });
+  </script>
 
 </body>
 </html>
