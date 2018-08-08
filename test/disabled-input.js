@@ -15,7 +15,7 @@ import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 Polymer({
   _template: html`
     <iron-input bind-value="{{myValue}}" invalid="{{myInvalid}}" id="input">
-      <input disabled="">
+      <input disabled>
     </iron-input>`,
 
   is: 'disabled-input',

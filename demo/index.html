@@ -40,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <iron-input><input placeholder="type=date" type="date"></iron-input>
         <iron-input><input placeholder="type=number" type="number"></iron-input>
-        <iron-input><input placeholder="disabled" disabled=""></iron-input>
+        <iron-input><input placeholder="disabled" disabled></iron-input>
       </template>
     </demo-snippet>
 
@@ -76,7 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background-color: #FFCDD2;
           }
         </style>
-        <iron-input allowed-pattern="[0-9]" auto-validate="">
+        <iron-input allowed-pattern="[0-9]" auto-validate>
           <input pattern="\d{3}" placeholder="exactly 3 digits are valid">
         </iron-input>
       </template>
@@ -92,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         </style>
         <cats-only></cats-only>
-        <iron-input auto-validate="" validator="cats-only">
+        <iron-input auto-validate validator="cats-only">
           <input placeholder="only 'cat' is valid">
         </iron-input>
       </template>
