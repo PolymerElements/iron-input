@@ -99,6 +99,7 @@ validated.
 @demo demo/index.html
 */
 Polymer({
+  /** @override */
   _template: html`
     <style>
       :host {
@@ -168,12 +169,14 @@ Polymer({
   observers: ['_bindValueChanged(bindValue, _inputElement)'],
   listeners: {'input': '_onInput', 'keypress': '_onKeypress'},
 
+  /** @override */
   created: function() {
     IronA11yAnnouncer.requestAvailability();
     this._previousValidInput = '';
     this._patternAlreadyChecked = false;
   },
 
+  /** @override */
   attached: function() {
     // If the input is added at a later time, update the internal reference.
     this._observer = dom(this).observeNodes(function(info) {
@@ -181,6 +184,7 @@ Polymer({
     }.bind(this));
   },
 
+  /** @override */
   detached: function() {
     if (this._observer) {
       dom(this).unobserveNodes(this._observer);
